@@ -1,27 +1,14 @@
-version: '3.8' 
+version: '3.8'
 
 services:
-  backend:
+  web:
+    build: .
+    command: ./init_superuser.sh
     volumes:
-      - static:/static
-      - .:/application
-    env_file:
-      - ./.env/.env
-    build:
-      context: .
+      - .:/app
     ports:
-      - 8080:8080
-    command: bash -c "
-      python3 ./application/manage.py migrate && python3 ./application/manage.py collectstatic --noinput && python3 manage.py createsuperuser && gunicorn app.wsgi -b 0.0.0.0:8080
-      "
-  nginx:
-    build: ./nginx
-    ports:
-      - 80:80
-    depends_on:
-      - backend
-    volumes:
-      - ./static:/static
-volumes:
-  static:
-  app:
+      - "8000:8000"
+    environment:
+      - DJANGO_SUPERUSER_USERNAME=admin  
+      - DJANGO_SUPERUSER_PASSWORD=admin  
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com
