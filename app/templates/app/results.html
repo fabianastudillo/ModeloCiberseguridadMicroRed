@@ -1,0 +1,111 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Resultados</title>
+{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+    {% if data %}
+        <div class="white_shd full margin_bottom_30">
+            <div class="full graph_head">
+                <div class="heading1 margin_0">
+                    <h2>Resultados</h2>
+                </div>
+            </div>
+            <div class="table_section padding_infor_info">
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Micro-red</th>
+                            <th>Fecha del diagnóstico</th>
+                            <th>Puntaje total</th>
+                            <th>Link</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for object in data %}
+                        <tr>
+                            <td>{{object.pk}}</td>
+                            <td>{{object.id_organization}}</td>
+                            <td>{{object.created}}</td>
+                            <td>{{object.total}}</td>
+                            <td><a href="{%url 'app:dashboard' object.pk %}"> Ver grafico de radar</a></td>
+                        </tr>
+                        {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <canvas id="barChart"></canvas>
+    {% else %}
+        <div class="white_shd full margin_bottom_30">
+            <div class="full graph_head">
+                <div class="heading1 margin_0">
+                    <h2 class="noresult">No se han realizado diagnósticos aún, por favor primero realice un diagnóstico para
+                        poder ver resultados.</h2>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <script>
+        var canvasElement = document.getElementById("barChart")
+        var dates = []
+        var scores = []
+        var backgroundColors = []
+        var borderColors = []
+        var total;
+        var red = "#FF0000";
+        var orange = "#FF8C00";
+        var lightGreen = "#98FB98";
+        var green = "#008000";
+        {% for object in data %}
+        dates.push('{{object.created}}')
+        scores.push({{object.total}})
+        total = {{object.total}}
+        if (total <= 250) {
+            backgroundColors.push(red)
+            borderColors.push(red)
+        }
+        else if (total > 250 && total <= 500) {
+            backgroundColors.push(orange)
+            borderColors.push(orange)
+        } else if (total > 500 && total <= 750) {
+            backgroundColors.push(lightGreen)
+            borderColors.push(lightGreen)
+        } else if (total > 750) {
+            backgroundColors.push(green)
+            borderColors.push(green)
+        }
+        {%endfor%}
+        var config = {
+            type: "bar",
+            data: {
+            labels: dates,
+            datasets: [
+                {
+                    label: "Puntaje",
+                    data:scores,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    }
+
+            ],
+
+            },
+        }
+        var barChart = new Chart(canvasElement,config)
+
+
+    </script>
+
+{% endblock %}
