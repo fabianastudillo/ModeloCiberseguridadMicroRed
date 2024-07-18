@@ -25,7 +25,8 @@ Clona el repositorio utilizando el siguiente comando:
 
 ```bash
 git clone https://github.com/narvydiego/ModeloCiberseguridadMicroRed.git
-cd ModeloCiberseguridadMicroRed
+cd ModeloCiberseguridadMicroRed 
+```
 
 ### Configuración de Variables de Entorno
 Antes de levantar el servicio, puedes personalizar las variables de entorno en el archivo docker-compose.yml para ajustar los credenciales de autenticación y otras configuraciones importantes de la aplicación.
@@ -35,6 +36,7 @@ Para iniciar la aplicación, ejecuta:
 
 ```bash
 docker-compose up -d
+```
 
 Esto creará e iniciará todos los servicios necesarios en contenedores Docker. La aplicación estará accesible a través del navegador en [Abrir aplicación](http://localhost:8000).
 
