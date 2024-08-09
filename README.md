@@ -4,7 +4,7 @@ Este repositorio contiene la aplicación para evaluar el Nivel de Madurez en Té
 
 - **Ing. Daniela Jiménez**
 - **Ing. Andrés Sumba**
-- **Ing. Fabián Astudillo**
+- **Ing. Fabián Astudillo PhD**
 
 El trabajo de los autores se puede encontrar en el repositorio institucional de la Universidad de Cuenca: [Ver trabajo](http://dspace.ucuenca.edu.ec/handle/123456789/41963)
 
