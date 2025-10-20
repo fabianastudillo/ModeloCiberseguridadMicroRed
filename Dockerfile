@@ -1,35 +1,35 @@
-# Utiliza una imagen base de Python más limpia y segura
-FROM python:3.11-slim-bookworm
+# Use a smaller Python base image
+FROM python:3.11-alpine
 
-# Actualiza el sistema y limpia en un solo RUN para reducir la huella de la imagen
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libpq-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Install system dependencies, Python and clean in a single layer
+RUN apk add --no-cache \
+    postgresql-dev \
+    gcc \
+    musl-dev \
+    linux-headers && \
+    pip install --upgrade --no-cache-dir pip
 
-# Actualiza pip en un layer dedicado para aprovechar el caching de Docker
-RUN pip install --upgrade pip
-
-# Establece el directorio de trabajo
+# Set working directory
 WORKDIR /app
 
-# Instala las dependencias
-# Copia solo el archivo necesario primero para aprovechar el cache de Docker
-COPY requirements.txt /app/
-RUN pip install -r requirements.txt
+# Copy and install Python dependencies in a single layer
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt gunicorn && \
+    find /usr/local -name "*.pyc" -delete && \
+    find /usr/local -name "__pycache__" -delete
 
-# Instala Gunicorn aparte
-RUN pip install gunicorn
+# Clean build dependencies that are no longer needed
+RUN apk del gcc musl-dev linux-headers
 
-# Copia el resto del código fuente del proyecto
-COPY . /app/
+# Copy source code
+COPY . .
 
-# Hace el script de inicio ejecutable (podría no ser necesario si ya tiene permisos)
-RUN chmod +x init_superuser.sh
+# Explicitly copy and make script executable
+COPY init_superuser.sh /app/init_superuser.sh
+RUN chmod +x /app/init_superuser.sh
 
-# Expone el puerto que Gunicorn usará
+# Expose port
 EXPOSE 8000
 
-# Define el comando para iniciar el servicio
-CMD ["./init_superuser.sh"]
+# Startup command
+CMD ["/app/init_superuser.sh"]
