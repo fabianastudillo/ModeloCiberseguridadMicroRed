@@ -1,5 +1,5 @@
 # Utiliza una imagen base de Python más limpia y segura
-FROM python:3.8.6-slim
+FROM python:3.11-slim-bookworm
 
 # Actualiza el sistema y limpia en un solo RUN para reducir la huella de la imagen
 RUN apt-get update && \
